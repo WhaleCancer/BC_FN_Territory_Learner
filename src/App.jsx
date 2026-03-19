@@ -11,6 +11,7 @@ const BC_BOUNDS = [
   [47.5, -139.3],
   [60.3, -113.5],
 ];
+const DATA_BASE_URL = `${import.meta.env.BASE_URL}data/`;
 const MAJOR_CITIES = [
   { name: 'Vancouver', coordinates: [49.2827, -123.1207] },
   { name: 'Victoria', coordinates: [48.4284, -123.3656] },
@@ -108,7 +109,7 @@ function App() {
       setLoadError('');
 
       try {
-        const response = await fetch('/data/sources.json');
+        const response = await fetch(`${DATA_BASE_URL}sources.json`);
         if (!response.ok) {
           throw new Error('Dataset catalog not found');
         }
@@ -173,7 +174,7 @@ function App() {
       setLoadError('');
 
       try {
-        const response = await fetch(`/data/${selectedDatasetMeta.outputFile}`);
+        const response = await fetch(`${DATA_BASE_URL}${selectedDatasetMeta.outputFile}`);
         if (!response.ok) {
           throw new Error('Dataset file missing');
         }
