@@ -222,6 +222,10 @@ function App() {
   const targetFeature = targetId ? featureById.get(targetId) : null;
   const targetName = targetFeature?.properties?.name ?? '';
   const guessedIds = useMemo(() => new Set(roundGuesses), [roundGuesses]);
+  const correctlyAnsweredIds = useMemo(
+    () => new Set(results.filter((entry) => entry.correct).map((entry) => entry.targetId)),
+    [results],
+  );
   const overlapChoiceIds = useMemo(
     () =>
       new Set(
@@ -297,6 +301,11 @@ function App() {
         return;
       }
 
+      if (correctlyAnsweredIds.has(guessedId)) {
+        setStatusMessage('You already found that nation earlier in this quiz. Pick a different area.');
+        return;
+      }
+
       const updatedGuesses = [...roundGuesses, guessedId];
 
       if (guessedId === targetId) {
@@ -343,6 +352,7 @@ function App() {
     },
     [
       attempt,
+      correctlyAnsweredIds,
       guessedIds,
       isFinished,
       loadError,
@@ -408,12 +418,15 @@ function App() {
         return leftName.localeCompare(rightName);
       });
 
-      const firstSelectable = matches.find((feature) => !guessedIds.has(feature?.properties?.id));
+      const firstSelectable = matches.find((feature) => {
+        const id = feature?.properties?.id;
+        return id && !guessedIds.has(id) && !correctlyAnsweredIds.has(id);
+      });
       if (!firstSelectable) {
         setOverlapChoices([]);
         setSelectedOverlapId(null);
         setStatusMessage(
-          'All overlapping options at this point were already guessed. Click a different area.',
+          'All overlapping options here were already used or solved. Click a different area.',
         );
         return;
       }
@@ -583,7 +596,7 @@ function App() {
         dashArray,
       };
     },
-    [guessedIds, overlapChoiceIds, roundResolved, selectedOverlapId, targetId],
+    [correctlyAnsweredIds, guessedIds, overlapChoiceIds, roundResolved, selectedOverlapId, targetId],
   );
 
   const onEachFeature = useCallback(
@@ -810,7 +823,7 @@ function App() {
               />
               {activeDataset ? (
                 <GeoJSON
-                  key={`${selectedDatasetId}-${currentIndex}-${attempt}-${roundGuesses.length}-${roundResolved}-${isFinished}`}
+                  key={`${selectedDatasetId}-${currentIndex}-${attempt}-${roundGuesses.length}-${roundResolved}-${isFinished}-${[...correctlyAnsweredIds].sort().join('|')}`}
                   data={activeDataset}
                   style={mapStyle}
                   onEachFeature={onEachFeature}
