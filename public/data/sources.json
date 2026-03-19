@@ -1,0 +1,59 @@
+{
+  "note": "Public BC government datasets transformed for NationsLearner gameplay.",
+  "license": "Data provided by the Province of British Columbia under the Open Government Licence - British Columbia.",
+  "defaultDatasetId": "bc_statement_of_intent",
+  "datasets": [
+    {
+      "id": "bc_statement_of_intent",
+      "mode": "territory",
+      "displayName": "BC Statement of Intent Boundaries",
+      "description": "Statement of Intent boundaries submitted through BC treaty processes. Useful for broad learning coverage, but not intended to represent settled treaty lands.",
+      "sourceLabel": "First Nation Statement of Intent Boundaries BC",
+      "serviceUrl": "https://delivery.maps.gov.bc.ca/arcgis/rest/services/whse/bcgw_pub_reg_legal_and_admin_boundaries/MapServer/1",
+      "metadataUrl": "https://catalogue.data.gov.bc.ca/dataset/69ea1b64-e7ce-481c-b0b5-e6450111697d",
+      "outputFile": "bc-statement-of-intent.geojson",
+      "fetchedAtUtc": "2026-03-19T20:21:26.527Z",
+      "rawFeatureCount": 58,
+      "groupedFeatureCount": 58
+    },
+    {
+      "id": "bc_treaty_areas",
+      "mode": "territory",
+      "displayName": "BC First Nations Treaty Areas",
+      "description": "Treaty-area boundaries from modern treaty processes across BC, grouped by First Nation name.",
+      "sourceLabel": "First Nations Treaty Areas",
+      "serviceUrl": "https://delivery.maps.gov.bc.ca/arcgis/rest/services/whse/bcgw_pub_whse_legal_admin_boundaries/MapServer/17",
+      "metadataUrl": "https://catalogue.data.gov.bc.ca/dataset/c1a5d55e-fef9-4605-8b20-c08ed4f0c870",
+      "outputFile": "bc-treaty-areas.geojson",
+      "fetchedAtUtc": "2026-03-19T20:21:29.786Z",
+      "rawFeatureCount": 69,
+      "groupedFeatureCount": 5
+    },
+    {
+      "id": "bc_treaty_lands",
+      "mode": "territory",
+      "displayName": "BC First Nations Treaty Lands",
+      "description": "Treaty land polygons representing lands associated with modern treaties in BC.",
+      "sourceLabel": "First Nations Treaty Lands",
+      "serviceUrl": "https://delivery.maps.gov.bc.ca/arcgis/rest/services/whse/bcgw_pub_whse_legal_admin_boundaries/MapServer/19",
+      "metadataUrl": "https://catalogue.data.gov.bc.ca/dataset/fd34808d-4be6-45ea-bc23-65109147933a",
+      "outputFile": "bc-treaty-lands.geojson",
+      "fetchedAtUtc": "2026-03-19T20:21:30.823Z",
+      "rawFeatureCount": 148,
+      "groupedFeatureCount": 8
+    },
+    {
+      "id": "bc_treaty_related_lands",
+      "mode": "territory",
+      "displayName": "BC First Nations Treaty Related Lands",
+      "description": "Treaty-related land boundaries connected to ratified treaty arrangements in BC.",
+      "sourceLabel": "First Nations Treaty Related Lands",
+      "serviceUrl": "https://delivery.maps.gov.bc.ca/arcgis/rest/services/whse/bcgw_pub_whse_legal_admin_boundaries/MapServer/0",
+      "metadataUrl": "https://catalogue.data.gov.bc.ca/dataset/7b4e5fce-161b-44dd-8ab4-e185d9539a46",
+      "outputFile": "bc-treaty-related-lands.geojson",
+      "fetchedAtUtc": "2026-03-19T20:21:31.360Z",
+      "rawFeatureCount": 52,
+      "groupedFeatureCount": 8
+    }
+  ]
+}

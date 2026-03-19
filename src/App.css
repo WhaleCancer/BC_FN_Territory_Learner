@@ -1,0 +1,356 @@
+.app-shell {
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.top-bar {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.9rem;
+  padding: 1rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dataset-picker {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dataset-picker select {
+  min-width: 250px;
+  border-radius: 0.6rem;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.88rem;
+}
+
+.dataset-picker select:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.city-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  user-select: none;
+}
+
+.city-toggle input {
+  margin: 0;
+  accent-color: #0f172a;
+}
+
+.dataset-description {
+  width: 100%;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.85rem;
+}
+
+.dataset-heading-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.dataset-title {
+  margin: 0.35rem 0 0;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dataset-copy {
+  margin: 0.3rem 0 0;
+  color: #334155;
+  font-size: 0.92rem;
+}
+
+.dataset-meta {
+  margin: 0.35rem 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.dataset-meta a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.dataset-meta a:hover {
+  text-decoration: underline;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.9rem;
+  padding: 1rem 1.1rem;
+}
+
+.card.error {
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.prompt-card h2 {
+  margin: 0.2rem 0 0.7rem;
+  color: #0f172a;
+  font-size: 1.7rem;
+}
+
+.prompt-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #475569;
+}
+
+.status {
+  margin: 0.8rem 0 0;
+  color: #334155;
+}
+
+.status.resolved {
+  color: #0f766e;
+  font-weight: 600;
+}
+
+.overlap-picker {
+  margin-top: 0.85rem;
+  padding: 0.75rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+}
+
+.overlap-copy {
+  margin: 0.35rem 0 0;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.overlap-options {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.overlap-option {
+  border-radius: 0.65rem;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.84rem;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.overlap-option.active {
+  border-color: #7c3aed;
+  background: #ede9fe;
+  color: #4c1d95;
+  font-weight: 600;
+}
+
+.overlap-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.overlap-actions {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.overlap-confirm {
+  margin-top: 0;
+}
+
+.overlap-cancel {
+  margin-top: 0;
+}
+
+.overlap-note {
+  margin: 0.65rem 0 0;
+  color: #475569;
+  font-size: 0.82rem;
+}
+
+.stats-row {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.stats-row p {
+  margin: 0;
+  color: #334155;
+  font-size: 0.92rem;
+}
+
+.stats-row.final p {
+  font-size: 1rem;
+}
+
+.primary-button,
+.secondary-button {
+  border-radius: 0.65rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.primary-button {
+  margin-top: 0.8rem;
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.secondary-button {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.result-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.missed-card {
+  margin-top: 0.9rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.8rem;
+}
+
+.missed-card ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1rem;
+}
+
+.missed-card li {
+  margin-bottom: 0.2rem;
+}
+
+.map-card {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.9rem;
+  padding: 0.5rem;
+}
+
+.map {
+  width: 100%;
+  height: 66vh;
+  border-radius: 0.7rem;
+}
+
+.leaflet-interactive {
+  cursor: crosshair;
+}
+
+.leaflet-tooltip.city-tooltip {
+  background: rgba(15, 23, 42, 0.9);
+  border: none;
+  border-radius: 0.45rem;
+  color: #ffffff;
+  box-shadow: none;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.35rem;
+}
+
+.leaflet-tooltip.city-tooltip::before {
+  border-top-color: rgba(15, 23, 42, 0.9);
+}
+
+.data-note {
+  color: #475569;
+  font-size: 0.85rem;
+  text-align: center;
+  padding-bottom: 0.4rem;
+}
+
+@media (max-width: 800px) {
+  .app-shell {
+    padding: 0.75rem;
+  }
+
+  .dataset-picker {
+    width: 100%;
+  }
+
+  .dataset-picker select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .prompt-card h2 {
+    font-size: 1.35rem;
+  }
+
+  .map {
+    height: 56vh;
+  }
+}
