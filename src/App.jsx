@@ -581,7 +581,15 @@ function App() {
         weight = 1.3;
       }
 
-      if (featureId === targetId && roundResolved) {
+      // Persist green for every nation answered correctly (this round + earlier rounds).
+      if (correctlyAnsweredIds.has(featureId)) {
+        border = '#15803d';
+        fill = '#86efac';
+        fillOpacity = 0.52;
+        weight = 1.45;
+        dashArray = undefined;
+      } else if (featureId === targetId && roundResolved) {
+        // Reveal answer after running out of guesses (not in correctlyAnsweredIds).
         border = '#166534';
         fill = '#4ade80';
         fillOpacity = 0.62;
