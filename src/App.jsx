@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { CircleMarker, GeoJSON, MapContainer, TileLayer, Tooltip } from 'react-leaflet';
 import bearing from '@turf/bearing';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
@@ -66,6 +66,14 @@ function getPointsForAttempt(attempt) {
 
 function buildPrompt(roundIndex, totalRounds, targetName) {
   return `Round ${roundIndex + 1}/${totalRounds}: find ${targetName}.`;
+}
+
+/** GeoJSON / queue ids must match Set lookups (ArcGIS JSON can mix number vs string). */
+function normalizeFeatureId(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  return String(value);
 }
 
 function asPointFeature(latLng) {
@@ -213,7 +221,10 @@ function App() {
   const featureById = useMemo(() => {
     const map = new Map();
     for (const feature of activeFeatures) {
-      map.set(feature.properties.id, feature);
+      const id = normalizeFeatureId(feature?.properties?.id);
+      if (id) {
+        map.set(id, feature);
+      }
     }
     return map;
   }, [activeFeatures]);
@@ -244,10 +255,12 @@ function App() {
 
   const startGame = useCallback(
     (featureIds = null) => {
-      const allIds = activeFeatures.map((feature) => feature.properties.id).filter(Boolean);
+      const allIds = activeFeatures
+        .map((feature) => normalizeFeatureId(feature?.properties?.id))
+        .filter(Boolean);
       const requestedIds =
         Array.isArray(featureIds) && featureIds.length
-          ? featureIds.filter((id) => featureById.has(id))
+          ? featureIds.map((id) => normalizeFeatureId(id)).filter((id) => id && featureById.has(id))
           : allIds;
       const shuffledQueue = shuffle(requestedIds);
 
@@ -419,7 +432,7 @@ function App() {
       });
 
       const firstSelectable = matches.find((feature) => {
-        const id = feature?.properties?.id;
+        const id = normalizeFeatureId(feature?.properties?.id);
         return id && !guessedIds.has(id) && !correctlyAnsweredIds.has(id);
       });
       if (!firstSelectable) {
@@ -439,6 +452,7 @@ function App() {
     },
     [
       activeFeatures,
+      correctlyAnsweredIds,
       guessedIds,
       isFinished,
       loadError,
@@ -459,8 +473,9 @@ function App() {
       return;
     }
 
+    const selectedKey = normalizeFeatureId(selectedOverlapId);
     const selectedFeature = overlapChoices.find(
-      (feature) => feature?.properties?.id === selectedOverlapId,
+      (feature) => normalizeFeatureId(feature?.properties?.id) === selectedKey,
     );
     if (!selectedFeature) {
       return;
@@ -549,7 +564,9 @@ function App() {
 
   const mapStyle = useCallback(
     (feature) => {
-      const featureId = feature?.properties?.id;
+      const featureId = normalizeFeatureId(feature?.properties?.id);
+      const targetKey = normalizeFeatureId(targetId);
+      const selectedOverlapKey = normalizeFeatureId(selectedOverlapId);
       const basePalette = { border: '#3b82f6', fill: '#93c5fd' };
 
       let border = basePalette.border;
@@ -558,7 +575,7 @@ function App() {
       let weight = 1.15;
       let dashArray = undefined;
 
-      if (overlapChoiceIds.has(featureId)) {
+      if (featureId && overlapChoiceIds.has(featureId)) {
         border = '#6366f1';
         fill = '#c7d2fe';
         fillOpacity = 0.35;
@@ -566,7 +583,7 @@ function App() {
         dashArray = '4 4';
       }
 
-      if (featureId === selectedOverlapId) {
+      if (featureId && selectedOverlapKey && featureId === selectedOverlapKey) {
         border = '#7c3aed';
         fill = '#c4b5fd';
         fillOpacity = 0.62;
@@ -574,7 +591,7 @@ function App() {
         dashArray = undefined;
       }
 
-      if (guessedIds.has(featureId) && featureId !== targetId) {
+      if (featureId && guessedIds.has(featureId) && featureId !== targetKey) {
         border = '#b91c1c';
         fill = '#fca5a5';
         fillOpacity = 0.55;
@@ -582,13 +599,13 @@ function App() {
       }
 
       // Persist green for every nation answered correctly (this round + earlier rounds).
-      if (correctlyAnsweredIds.has(featureId)) {
+      if (featureId && correctlyAnsweredIds.has(featureId)) {
         border = '#15803d';
         fill = '#86efac';
         fillOpacity = 0.52;
         weight = 1.45;
         dashArray = undefined;
-      } else if (featureId === targetId && roundResolved) {
+      } else if (featureId && targetKey && featureId === targetKey && roundResolved) {
         // Reveal answer after running out of guesses (not in correctlyAnsweredIds).
         border = '#166534';
         fill = '#4ade80';
@@ -606,6 +623,17 @@ function App() {
     },
     [correctlyAnsweredIds, guessedIds, overlapChoiceIds, roundResolved, selectedOverlapId, targetId],
   );
+
+  const territoriesLayerRef = useRef(null);
+
+  // react-leaflet applies style updates in useEffect; force sync refresh so solved colours
+  // match state (important on GitHub Pages / production builds).
+  useLayoutEffect(() => {
+    const layer = territoriesLayerRef.current;
+    if (layer && typeof layer.setStyle === 'function') {
+      layer.setStyle(mapStyle);
+    }
+  }, [mapStyle]);
 
   const onEachFeature = useCallback(
     (feature, layer) => {
@@ -722,9 +750,12 @@ function App() {
                     <div className="overlap-options">
                       {overlapChoices.map((feature, index) => {
                         const optionId = feature?.properties?.id;
-                        const alreadyGuessed = guessedIds.has(optionId);
-                        const isSelected = optionId === selectedOverlapId;
-                        const key = optionId ?? `overlap-option-${index}`;
+                        const optionKey = normalizeFeatureId(optionId);
+                        const alreadyGuessed = optionKey ? guessedIds.has(optionKey) : false;
+                        const alreadySolved = optionKey ? correctlyAnsweredIds.has(optionKey) : false;
+                        const isSelected =
+                          normalizeFeatureId(selectedOverlapId) === optionKey && optionKey !== null;
+                        const key = optionKey ?? optionId ?? `overlap-option-${index}`;
 
                         return (
                           <button
@@ -732,10 +763,14 @@ function App() {
                             type="button"
                             className={isSelected ? 'overlap-option active' : 'overlap-option'}
                             onClick={() => handleOverlapOptionSelect(optionId)}
-                            disabled={!optionId || alreadyGuessed}
+                            disabled={!optionId || alreadyGuessed || alreadySolved}
                           >
                             Option {index + 1}
-                            {alreadyGuessed ? ' (already guessed)' : ''}
+                            {alreadyGuessed
+                              ? ' (already guessed)'
+                              : alreadySolved
+                                ? ' (already found)'
+                                : ''}
                           </button>
                         );
                       })}
@@ -831,6 +866,7 @@ function App() {
               />
               {activeDataset ? (
                 <GeoJSON
+                  ref={territoriesLayerRef}
                   key={`${selectedDatasetId}-${currentIndex}-${attempt}-${roundGuesses.length}-${roundResolved}-${isFinished}-${[...correctlyAnsweredIds].sort().join('|')}`}
                   data={activeDataset}
                   style={mapStyle}
